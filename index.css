@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/* Layout concept: alternating navy and white bands, a 12-column grid, and
+   monospace "system" labels drawn from SAP landscape conventions. */
+@theme {
+  --color-navy-950: #071226;
+  --color-navy-900: #0b1a36;
+  --color-navy-800: #12264d;
+  --color-navy-700: #1b3466;
+  --color-navy-400: #6f84ad;
+  --color-navy-300: #8fa2c6;
+  --color-navy-200: #b4c2dc;
+  --color-navy-100: #d6deec;
+  --color-electric: #2f7bff;
+  --color-electric-600: #1c64e8;
+  --color-electric-300: #7fb0ff;
+  --color-mist: #f2f5fa;
+  --color-line: #dfe5ef;
+
+  --font-display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@layer base {
+  :root { color-scheme: light; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html, body, #root { height: 100%; }
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: var(--color-navy-950);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Paint the safe-area strip above the sticky header on notched phones. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px);
+    z-index: 60;
+    background: var(--color-navy-950);
+  }
+  ::selection { background: rgba(47, 123, 255, 0.25); }
+}
+
+@layer components {
+  .gutter {
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  @media (min-width: 768px) {
+    .gutter {
+      padding-left: max(40px, env(safe-area-inset-left, 0px));
+      padding-right: max(40px, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  /* Fine blueprint grid behind hero sections, fading toward the edges. */
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(127, 176, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(127, 176, 255, 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 30%, transparent 75%);
+  }
+
+  .transport-dot { animation: transport 4.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+  @keyframes transport {
+    0% { left: 0%; opacity: 0; }
+    8% { opacity: 1; }
+    45% { left: 50%; }
+    55% { left: 50%; }
+    92% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+
+  .reveal { animation: reveal 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .reveal-delay { animation-delay: 0.15s; }
+  @keyframes reveal {
+    from { opacity: 0.001; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .transport-dot { animation: none; }
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; }
+  }
+}
